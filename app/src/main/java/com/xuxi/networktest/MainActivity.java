@@ -16,6 +16,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     TextView responseText;
@@ -36,13 +40,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.send_request:
-                sendRequestWithHttpURLConnection();
+//                sendRequestWithHttpURLConnection();
+                sendRequestWithOKHttp();
                 break;
                 default:
                     break;
         }
     }
 
+    private void sendRequestWithOKHttp(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    OkHttpClient client = new OkHttpClient();
+                    Request request = new Request.Builder()
+                            .url("https://www.baidu.com")
+                            .build();
+                    Response response = client.newCall(request).execute();
+                    String responseData = response.body().string();
+                    showResponse(responseData);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 
     private void sendRequestWithHttpURLConnection(){
         //开启线程来发起网络请求
