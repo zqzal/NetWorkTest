@@ -55,10 +55,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 try {
                     URL url = new URL("https://www.baidu.com");
                     connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestMethod("GET");
-//                    connection.setRequestMethod("POST");
-//                    DataOutputStream out = new DataOutputStream(connection.getOutputStream());
-//                    out.writeBytes("username=admin&password=123456");
+//                    connection.setRequestMethod("GET");
+                    connection.setRequestMethod("POST");
+                    DataOutputStream out = new DataOutputStream(connection.getOutputStream());
+                    out.writeBytes("username=admin&password=123456");
                     connection.setConnectTimeout(8000);
                     connection.setReadTimeout(80000);
                     InputStream in = connection.getInputStream();
