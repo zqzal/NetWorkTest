@@ -9,6 +9,9 @@ import android.view.textservice.TextInfo;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONStringer;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xmlpull.v1.XmlPullParser;
@@ -58,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-
     private void sendRequestWithOKHttp(){
         new Thread(new Runnable() {
             @Override
@@ -66,18 +68,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 try{
                     OkHttpClient client = new OkHttpClient();
                     Request request = new Request.Builder()
-                            .url("http://127.0.0.1/get_data1.json")
+                            .url("https://ditu.amap.com/service/regeo?longitude=121.04925573429551&latitude=31.315590522490712")
                             .build();
                     Response response = client.newCall(request).execute();
+
                     String responseData = response.body().string();
-//                    showResponse(responseData);
-                    parseXMLWithPull(responseData);
+                    showResponse(responseData);
+//                    parseXMLWithPull(responseData);
+                    parseJSONWithJSONObject(responseData);
 
                 }catch (Exception e){
                     e.printStackTrace();
                 }
             }
         }).start();
+    }
+
+    private void parseJSONWithJSONObject(String jsonData){
+        try {
+//            JSONObject statusJson =
+//            JsonString = getJsonStrFromNetData(jsonData);
+
+
+
+            JSONArray jsonArray = new JSONArray(jsonData);
+
+            Log.d(TAG, "parseJSONWithJSONObject: " + jsonArray.toString());
+            Log.d(TAG, "parseJSONWithJSONObject: " + jsonArray.toString());
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String status = jsonObject.getString("status");
+                Log.d(TAG, "status = " + status);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void parseXMLWithPull(String xmlData){
