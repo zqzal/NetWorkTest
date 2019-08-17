@@ -32,6 +32,8 @@ import java.util.List;
 
 import javax.xml.parsers.SAXParserFactory;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -39,6 +41,9 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static final String TAG = "MainActivity";
+
+    private static final String GetUrl = "https://ditu.amap.com/service/regeo?longitude=121.04925573429551&latitude=31.315590522490712";
+
     TextView responseText;
 
     @Override
@@ -58,12 +63,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()){
             case R.id.send_request:
 //                sendRequestWithHttpURLConnection();
-                sendRequestWithOKHttp();
+//                sendRequestWithOKHttp();
+//                sendRequestWithHttpUtilURLConnection();
+                sendRequestWithOKHttpCallBack();
                 break;
                 default:
                     break;
         }
     }
+    //HttpUtil HttpURLConnection
+    private void sendRequestWithHttpUtilURLConnection(){
+        HttpUtil.sendHttpRequest(GetUrl, new HttpCallbackListener() {
+            @Override
+            public void onFinish(String response) {
+                //在这里根据返回内容执行具体的逻辑
+                showResponse(response);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                //在这里对异常情况进行处理
+            }
+        });
+    }
+
+    //HttpUtil OKHttp
+    private void sendRequestWithOKHttpCallBack(){
+        HttpUtil.sendOKHttpRequest(GetUrl, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                //在这里对异常情况进行处理
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                //得到服务器返回的具体内容
+                String responseData = response.body().string();
+                showResponse(responseData);
+            }
+        });
+    }
+
     //OKHttp请求
     private void sendRequestWithOKHttp(){
         new Thread(new Runnable() {
