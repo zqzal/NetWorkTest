@@ -9,6 +9,9 @@ import android.view.textservice.TextInfo;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONStringer;
@@ -25,6 +28,7 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 import javax.xml.parsers.SAXParserFactory;
 
@@ -60,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
         }
     }
-
+    //OKHttp请求
     private void sendRequestWithOKHttp(){
         new Thread(new Runnable() {
             @Override
@@ -76,14 +80,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     showResponse(responseData);
 //                    parseXMLWithPull(responseData);
                     parseJSONWithJSONObject(responseData);
-
+                    parseJSONWithGSON(responseData);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
             }
         }).start();
     }
+    //GSON解析
+    private void parseJSONWithGSON(String jsonData){
+        try {
+            JSONObject jsonObject1 = new JSONObject(jsonData);
+            JSONObject jsonData1 = jsonObject1.getJSONObject("data");
+            Gson gson = new Gson();
+            List<App> appList = gson.fromJson(jsonData1.getString("cross_list"),new TypeToken<List<App>>(){}.getType());
+            for (App app : appList){
+                Log.d(TAG, "===========================");
+                Log.d(TAG, "app " + app.getCrossid());
+                Log.d(TAG, "app " + app.getDistance());
+                Log.d(TAG, "===========================");
+            }
 
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+    //JSONObject 解析
     private void parseJSONWithJSONObject(String jsonData){
         try {
             JSONObject jsonObject1 = new JSONObject(jsonData);
@@ -104,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
         }
     }
-
+    //Pull解析
     private void parseXMLWithPull(String xmlData){
         try{
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
@@ -145,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
         }
     }
-
+    //SAX解析
     private void parseXMLWithSAX(String xmlData){
         try{
             SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -159,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
         }
     }
-
+    //常规请求
     private void sendRequestWithHttpURLConnection(){
         //开启线程来发起网络请求
         new Thread(new Runnable() {
