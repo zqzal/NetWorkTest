@@ -86,19 +86,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void parseJSONWithJSONObject(String jsonData){
         try {
-//            JSONObject statusJson =
-//            JsonString = getJsonStrFromNetData(jsonData);
+            JSONObject jsonObject1 = new JSONObject(jsonData);
+            JSONObject jsonData1 = jsonObject1.getJSONObject("data");
+            String adcode = jsonData1.getString("adcode");
+            String areacode = jsonData1.getString("areacode");
+            String city = jsonData1.getString("city");
+            String cityadcode = jsonData1.getString("cityadcode");
 
+            JSONArray jsonArray = new JSONArray(jsonData1.getString("cross_list"));
 
-
-            JSONArray jsonArray = new JSONArray(jsonData);
-
-            Log.d(TAG, "parseJSONWithJSONObject: " + jsonArray.toString());
-            Log.d(TAG, "parseJSONWithJSONObject: " + jsonArray.toString());
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                String status = jsonObject.getString("status");
-                Log.d(TAG, "status = " + status);
+                String distance = jsonObject.getString("distance");
+                Log.d(TAG, "distance = " + distance);
             }
         }catch (Exception e){
             e.printStackTrace();
