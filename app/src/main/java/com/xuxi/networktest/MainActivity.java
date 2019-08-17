@@ -9,6 +9,8 @@ import android.view.textservice.TextInfo;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -20,6 +22,8 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import javax.xml.parsers.SAXParserFactory;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -62,11 +66,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 try{
                     OkHttpClient client = new OkHttpClient();
                     Request request = new Request.Builder()
-                            .url("https://www.bai.com")
+                            .url("http://127.0.0.1/get_data1.json")
                             .build();
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
 //                    showResponse(responseData);
+                    parseXMLWithPull(responseData);
+
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -76,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void parseXMLWithPull(String xmlData){
         try{
-
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             XmlPullParser xmlPullParser = factory.newPullParser();
             xmlPullParser.setInput(new StringReader(xmlData));
@@ -116,6 +121,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void parseXMLWithSAX(String xmlData){
+        try{
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            XMLReader xmlReader = factory.newSAXParser().getXMLReader();
+            ContentHandler handler = new ContentHandler();
+            //将 ContentHandler的实例设置到XMLReader中
+            xmlReader.setContentHandler(handler);
+            //开始执行解析
+            xmlReader.parse(new InputSource(new StringReader(xmlData)));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     private void sendRequestWithHttpURLConnection(){
         //开启线程来发起网络请求
